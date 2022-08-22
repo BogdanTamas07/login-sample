@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "types": [
+            "node"
+        ],
+        "target": "es6",
+        "noImplicitAny": true,
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "outDir": "dist",
+        "baseUrl": ".",
+        "paths": {
+            "@/config/*": [
+                "src/config/*"
+            ],
+            "@/constants/*": [
+                "src/constants/*"
+            ],
+            "@/models/*": [
+                "src/models/*"
+            ],
+            "@/controllers/*": [
+                "src/controllers/*"
+            ],
+        }
+    },
+    "include": [
+        "src/**/*"
+    ]
+}
