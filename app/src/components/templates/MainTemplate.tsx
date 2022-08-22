@@ -10,19 +10,22 @@ const protectedRoutes = [{ path: "/profile" }, { path: "/" }];
 export const MainTemplate: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const { userInfo = null, error } = useSelector((state: any) => state);
+  const { userInfo = null } = useSelector((state: any) => state);
   const { username } = userInfo ?? {};
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    const storageUser = JSON.parse(localStorage.getItem("user") ?? "null");
     if (userInfo) {
-      localStorage.setItem("user", JSON.stringify(userInfo));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ ...storageUser, ...userInfo })
+      );
     }
 
     if (!userInfo) {
-      const storageUser = JSON.parse(localStorage.getItem("user") ?? "null");
       dispatch(fetchUser(storageUser) as unknown as AnyAction);
     }
   }, [userInfo, dispatch]);

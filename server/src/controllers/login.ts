@@ -19,9 +19,7 @@ module.exports = (app: any) => {
               username: req.body.username,
             },
           }).then((user: any) => {
-            const token = jwt.sign({ id: user.id }, "jwt-secret", {
-              expiresIn: 3600,
-            });
+            const token = jwt.sign({ id: user.id }, "jwt-secret");
 
             const {
               dataValues: { id, username, email },

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { API_URL, HEADER_CONFIG } from "../../constants";
+import { Buffer } from "buffer";
 import axios from "axios";
 
 export const registerUser = createAsyncThunk(
@@ -15,7 +16,7 @@ export const registerUser = createAsyncThunk(
     try {
       await axios.post(
         `${API_URL}/register`,
-        { username, email, password },
+        { username, email, password: Buffer.from(password).toString("base64") },
         HEADER_CONFIG
       );
     } catch (error: any) {

@@ -1,5 +1,5 @@
-// @ts-nocheck
 import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "redux/store";
 import {
   addItem,
   fetchUser,
@@ -17,96 +17,130 @@ const initialState = {
   success: false,
 };
 
-const userSlice = createSlice({
+const userSlice: { reducer: unknown; actions: unknown } = createSlice({
   name: "user",
   initialState,
   reducers: {},
-  extraReducers: {
-    [loginUser.pending]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(loginUser.pending, (state: RootState) => {
       state.loading = true;
       state.error = null;
-    },
-    [loginUser.fulfilled]: (state, { payload: { userInfo } }) => {
-      state.loading = false;
-      state.userInfo = userInfo;
-    },
-    [loginUser.rejected]: (state, { error }) => {
-      state.loading = false;
-      state.error = error;
-    },
-    [resetPassword.pending]: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    [resetPassword.fulfilled]: (state, { payload: { userInfo } }) => {
-      state.loading = false;
-      state.userInfo = userInfo;
-    },
-    [resetPassword.rejected]: (state, { error }) => {
-      state.loading = false;
-      state.error = error;
-    },
-    [registerUser.pending]: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    [registerUser.fulfilled]: (state) => {
-      state.loading = false;
-      state.success = true;
-    },
-    [registerUser.rejected]: (state, { error }) => {
-      state.loading = false;
-      state.error = error;
-    },
-    [addItem.pending]: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    [addItem.fulfilled]: (state, { payload: { item = null } }) => {
-      state.loading = false;
-      state.messagesList = [...state.messagesList, item];
-      state.success = true;
-    },
-    [addItem.rejected]: (state, { error }) => {
-      state.loading = false;
-      state.error = error;
-    },
-    [fetchItems.pending]: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    [fetchItems.fulfilled]: (state, { payload: { items } }) => {
-      state.loading = false;
-      state.messagesList = items;
-      state.success = true;
-    },
-    [fetchItems.rejected]: (state, { error }) => {
-      state.loading = false;
-      state.error = error;
-    },
-    [fetchUser.pending]: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    [fetchUser.fulfilled]: (
-      state,
-      { payload: { email = "", username = "" } = {} }
-    ) => {
-      state.loading = false;
+    }),
+      builder.addCase(
+        loginUser.fulfilled,
+        (state: RootState, { payload: { userInfo = null } }) => {
+          state.loading = false;
+          state.userInfo = userInfo;
+        }
+      ),
+      builder.addCase(
+        loginUser.rejected,
+        (state: RootState, { payload = null, error = null }) => {
+          state.loading = false;
+          if (payload) {
+            state.error = { message: payload };
+          } else {
+            state.error = error;
+          }
+        }
+      ),
+      builder.addCase(resetPassword.pending, (state: RootState) => {
+        state.loading = true;
+        state.error = null;
+      }),
+      builder.addCase(
+        resetPassword.fulfilled,
+        (state: RootState, { payload: { userInfo = null } }) => {
+          state.loading = false;
+          state.userInfo = userInfo;
+        }
+      ),
+      builder.addCase(
+        resetPassword.rejected,
+        (state: RootState, { error = null }) => {
+          state.loading = false;
+          state.error = error;
+        }
+      ),
+      builder.addCase(registerUser.pending, (state: RootState) => {
+        state.loading = true;
+        state.error = null;
+      }),
+      builder.addCase(registerUser.fulfilled, (state: RootState) => {
+        state.loading = false;
+        state.success = true;
+      }),
+      builder.addCase(
+        registerUser.rejected,
+        (state: RootState, { error = null }) => {
+          state.loading = false;
+          state.error = error;
+        }
+      ),
+      builder.addCase(addItem.pending, (state: RootState) => {
+        state.loading = true;
+        state.error = null;
+      }),
+      builder.addCase(
+        addItem.fulfilled,
+        (state: RootState, { payload: { item = null } }) => {
+          state.loading = false;
+          state.messagesList = [...state.messagesList, item];
+          state.success = true;
+        }
+      ),
+      builder.addCase(
+        addItem.rejected,
+        (state: RootState, { error = null }) => {
+          state.loading = false;
+          state.error = error;
+        }
+      ),
+      builder.addCase(fetchItems.pending, (state: RootState) => {
+        state.loading = true;
+        state.error = null;
+      }),
+      builder.addCase(
+        fetchItems.fulfilled,
+        (state: RootState, { payload: { items = [] } }) => {
+          state.loading = false;
+          state.messagesList = items;
+          state.success = true;
+        }
+      ),
+      builder.addCase(
+        fetchItems.rejected,
+        (state: RootState, { error = null }) => {
+          state.loading = false;
+          state.error = error;
+        }
+      ),
+      builder.addCase(fetchUser.pending, (state: RootState) => {
+        state.loading = true;
+        state.error = null;
+      }),
+      builder.addCase(
+        fetchUser.fulfilled,
+        (state: RootState, { payload: { email = "", username = "" } = {} }) => {
+          state.loading = false;
 
-      if (email && username) {
-        const user = JSON.parse(localStorage.getItem("user") ?? "null");
-        const userInfo = { ...user, email, username };
+          if (email && username) {
+            const user = JSON.parse(localStorage.getItem("user") ?? "null");
+            const userInfo = { ...user, email, username };
 
-        state.userInfo = userInfo;
-      }
-    },
-    [fetchUser.rejected]: (state, { payload }) => {
-      state.loading = false;
-      const user = JSON.parse(localStorage.getItem("user") ?? "null");
-      if (user) state.userInfo = user;
-      state.error = payload;
-    },
+            state.userInfo = userInfo;
+          }
+        }
+      ),
+      builder.addCase(
+        fetchUser.rejected,
+        (state: RootState, { payload = null }) => {
+          state.loading = false;
+          const user = JSON.parse(localStorage.getItem("user") ?? "null");
+          if (user) state.userInfo = user;
+          state.error = payload;
+        }
+      );
   },
 });
 

@@ -36,7 +36,12 @@ module.exports = (app: any) => {
                 res.status(200).send({
                   auth: true,
                   message: "Password was changed successfully",
-                  userInfo: { id, email, username },
+                  userInfo: {
+                    id,
+                    email,
+                    username,
+                    token: req.headers["authorization"].split(" ")[1],
+                  },
                 });
               });
           } else {

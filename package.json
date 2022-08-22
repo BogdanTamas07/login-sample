@@ -1,0 +1,24 @@
+{
+  "name": "login-sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "cd server && yarn start",
+    "client": "cd app && yarn start",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BogdanTamas07/login-sample.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BogdanTamas07/login-sample/issues"
+  },
+  "homepage": "https://github.com/BogdanTamas07/login-sample#readme",
+  "dependencies": {
+    "concurrently": "^7.3.0"
+  }
+}

@@ -1,31 +1,35 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetPassword } from "../../redux/actions";
-import { FormHandler, ResetPassState } from "../../types/index";
+import { ResetPassState } from "../../types/index";
 import { resetPasswordValidationSchema } from "../../schemas/index";
+import { AnyAction } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
 
 export const ResetPassword: FC = () => {
-  const { email, token } = useParams();
-  const [{ message, loading }, setState] = useState<FormHandler>({
-    loading: false,
-    message: "",
-  });
+  const { email = "", token = "" } = useParams();
+  const { loading, error = null } = useSelector((state: any) => state);
+  const { message = "" } = error ?? {};
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
   const handleResetPassword = (data: ResetPassState) => {
-    if (!token) {
-      setState((state: any) => ({
-        ...state,
-        message: "Invalid reset password token",
-      }));
-      return;
-    } //@ts-ignore
-
-    dispatch(resetPassword({ ...data, email, token }));
+    if (token) {
+      const tokens: any[] = JSON.parse(
+        localStorage.getItem("tokens") ?? "null"
+      );
+      if (tokens) {
+        if (tokens.includes(token)) {
+          return navigate("/reset-password");
+        }
+        localStorage.setItem("tokens", JSON.stringify([...tokens, token]));
+      } else localStorage.setItem("tokens", JSON.stringify([token]));
+    }
+    dispatch(resetPassword({ ...data, email, token }) as unknown as AnyAction);
   };
 
   return (

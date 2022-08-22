@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { AnyAction } from "@reduxjs/toolkit";
@@ -6,6 +6,7 @@ import { AnyAction } from "@reduxjs/toolkit";
 import { RegisterState } from "../../types";
 import { registrationValidationSchema } from "../../schemas";
 import { registerUser } from "../../redux/actions";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   username: "",
@@ -14,13 +15,18 @@ const initialValues = {
 };
 
 export const Register: FC = () => {
-  const { loading, error } = useSelector((state: any) => state);
+  const { loading, error, success } = useSelector((state: any) => state);
   const { message = "" } = error ?? {};
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleRegister = (data: RegisterState) => {
     dispatch(registerUser(data) as unknown as AnyAction);
   };
+
+  useEffect(() => {
+    if (success) navigate("/login");
+  }, [success]);
 
   return (
     <div className="col-md-12">
@@ -89,14 +95,7 @@ export const Register: FC = () => {
 
             {message && (
               <div className="form-group">
-                <div
-                  className={
-                    // successful
-                    //   ? "alert alert-success"
-                    "alert alert-danger mt-1"
-                  }
-                  role="alert"
-                >
+                <div className={"alert alert-danger mt-1"} role="alert">
                   {message}
                 </div>
               </div>
